@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'enrollments',
     'permissions_doc',
     'reports',
+    'branches'
 ]
 
 MIDDLEWARE = [

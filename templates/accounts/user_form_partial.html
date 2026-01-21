@@ -1,0 +1,66 @@
+
+<div class="mb-3">
+
+  <div class="input-group input-group-outline {% if form.username.errors %}is-invalid{% endif %}">
+    <label class="form-label">اسم المستخدم</label>
+    {{ form.username }}
+  </div>
+
+  {% if form.username.errors %}
+    <div class="text-danger text-xs mt-1">
+      {{ form.username.errors.0 }}
+    </div>
+  {% endif %}
+</div>
+
+
+<div class="mb-3">
+  <div class="input-group input-group-outline {% if form.email.errors %}is-invalid{% endif %}">
+    <label class="form-label">اسم المستخدم</label>
+    {{ form.email }}
+  </div>
+
+  {% if form.email.errors %}
+    <div class="text-danger text-xs mt-1">
+      {{ form.email.errors.0 }}
+    </div>
+  {% endif %}
+</div>
+
+<div class="mb-3">
+  <div class="input-group input-group-outline {% if form.branch.errors %}is-invalid{% endif %}">
+    <label class="form-label">اسم المستخدم</label>
+    {{ form.branch }}
+  </div>
+
+  {% if form.branch.errors %}
+    <div class="text-danger text-xs mt-1">
+      {{ form.branch.errors.0 }}
+    </div>
+  {% endif %}
+</div>
+
+<div class="mb-3">
+  <div class="input-group input-group-outline {% if form.password.errors %}is-invalid{% endif %}">
+    <label class="form-label">اسم المستخدم</label>
+    {{ form.password }}
+  </div>
+
+  {% if form.password.errors %}
+    <div class="text-danger text-xs mt-1">
+      {{ form.password.errors.0 }}
+    </div>
+  {% endif %}
+</div>
+
+
+<div class="form-check form-switch mt-3">
+  {{ form.is_active }}
+  <label class="form-check-label">نشط</label>
+</div>
+
+{% if form.is_active.errors %}
+  <div class="text-danger text-xs mt-1">
+    {{ form.is_active.errors.0 }}
+  </div>
+{% endif %}

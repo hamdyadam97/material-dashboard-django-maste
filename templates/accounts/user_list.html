@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="GET" class="me-3">
+  <input type="text"
+         name="search"
+         value="{{ search }}"
+         class="form-control form-control-sm"
+         placeholder="Search user">
+</form>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card my-4">
+
+        <!-- Header -->
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+          <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
+            <h6 class="text-white text-capitalize ps-3 mb-0">useres</h6>
+
+           {% if request.user.is_superuser %}
+<button class="btn btn-sm btn-light"
+        data-bs-toggle="modal"
+        data-bs-target="#userModal">
+  + إضافة مستخدم
+</button>
+{% endif %}
+
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card-body px-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    user
+                  </th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                    Address
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    Status
+                  </th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    Created
+                  </th>
+                  <th class="text-secondary opacity-7"></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for user in users %}
+                <tr>
+
+                  <!-- user Name -->
+                  <td>
+                    <div class="d-flex px-2 py-1">
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="mb-0 text-sm">{{ user.username }}</h6>
+                        <p class="text-xs text-secondary mb-0">
+                          ID: {{ user.id }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Address -->
+                  <td>
+                    <p class="text-xs font-weight-bold mb-0">
+                      {{ user.email }}
+                    </p>
+                  </td>
+
+                  <!-- Status -->
+                  <td class="align-middle text-center text-sm">
+                    {% if user.is_active %}
+                      <span class="badge badge-sm bg-gradient-success">Active</span>
+                    {% else %}
+                      <span class="badge badge-sm bg-gradient-secondary">Inactive</span>
+                    {% endif %}
+                  </td>
+
+                  <!-- Date -->
+                  <td class="align-middle text-center">
+                    <span class="text-secondary text-xs font-weight-bold">
+                      {{ user.created_at|date:"d/m/Y" }}
+                    </span>
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="align-middle text-end pe-3">
+                    {% if request.user.is_superuser %}
+                   <a href="{% url 'accounts:user_save' %}"
+   class="text-secondary text-xs"
+   data-bs-toggle="modal"
+   data-bs-target="#userModal">
+   تعديل
+</a>
+
+
+
+                      <a href="javascript:void(0)"
+   class="text-danger text-xs"
+   onclick="confirmDelete('{{ user.id }}')">
+   Delete
+</a>
+
+                    {% else %}
+                      <span class="text-muted text-xs">View only</span>
+                    {% endif %}
+                  </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted">
+                    No useres found
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+
+            </table>
+          </div>
+            <div class="d-flex justify-content-center mt-3">
+  {% if useres.has_previous %}
+    <a class="btn btn-sm btn-outline-primary me-1"
+       href="?page={{ useres.previous_page_number }}&search={{ search }}">
+      Previous
+    </a>
+  {% endif %}
+
+  <span class="btn btn-sm btn-light disabled">
+    Page {{ useres.number }} of {{ useres.paginator.num_pages }}
+  </span>
+
+  {% if useres.has_next %}
+    <a class="btn btn-sm btn-outline-primary ms-1"
+       href="?page={{ useres.next_page_number }}&search={{ search }}">
+      Next
+    </a>
+  {% endif %}
+</div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="userModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+<form method="POST">
+  {% csrf_token %}
+  <input type="hidden" name="user_id" id="user_id">
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalTitle">إضافة مستخدم</h5>
+  </div>
+
+  <div class="modal-body">
+    {% include 'accounts/user_form_partial.html' %}
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+    <button class="btn bg-gradient-primary">حفظ</button>
+  </div>
+</form>
+
+    </div>
+  </div>
+</div>
+<script>
+
+    {% if form.errors %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new bootstrap.Modal(document.getElementById('userModal')).show();
+  });
+</script>
+{% endif %}
+
+    function openCreateModal() {
+  document.getElementById('modalTitle').innerText = 'Create user';
+  document.getElementById('userForm').reset();
+  document.getElementById('user_id').value = '';
+}
+
+function openEditModal(id, name, address, is_active) {
+  document.getElementById('modalTitle').innerText = 'Edit user';
+  document.querySelector('[name="name"]').value = name;
+  document.querySelector('[name="address"]').value = address;
+  document.querySelector('[name="is_active"]').checked = (is_active === 'True');
+  document.getElementById('user_id').value = id;
+
+  new bootstrap.Modal(document.getElementById('userModal')).show();
+}
+</script>
+<script>
+  document.querySelectorAll('.form-control').forEach((el) => {
+    el.addEventListener('focus', () => {
+      el.parentElement.classList.add('is-focused');
+    });
+    el.addEventListener('blur', () => {
+      if (!el.value) {
+        el.parentElement.classList.remove('is-focused');
+      }
+    });
+  });
+</script>
+
+
+<script>
+function confirmDelete(id) {
+  if (confirm("Are you sure you want to delete this user?")) {
+    window.location.href = `/useres/delete/${id}/`;
+  }
+}
+</script>
+
+<style>
+/* input border */
+.is-invalid .form-control {
+  border-color: #f44335 !important;
+}
+
+/* label */
+.is-invalid .form-label {
+  color: #f44335 !important;
+}
+
+/* focus */
+.is-invalid.is-focused .form-control {
+  border-color: #f44335 !important;
+}
+</style>
+
+{% endblock %}

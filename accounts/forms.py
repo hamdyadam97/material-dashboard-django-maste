@@ -1,35 +1,42 @@
 from django import forms
-from django.contrib.auth import get_user_model
+from .models import User
 
-User = get_user_model()
-
-
-class EmployeeCreateForm(forms.ModelForm):
+class UserForm(forms.ModelForm):
     password = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter password',
-            'autocomplete': 'new-password'
-        })
+        widget=forms.PasswordInput,
+        required=False
     )
 
     class Meta:
         model = User
-        fields = ['username', 'password']
-
+        fields = [
+            'username',
+            'email',
+            'branch',
+            'is_active',
+            'is_staff',
+        ]
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter username',
-                'autocomplete': 'off'
+            }),
+            'email': forms.TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'establishment_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'branch': forms.Select(attrs={
+                'class': 'form-control',
+
+
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
             }),
         }
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password'])
-        user.role = 'employee'
-        if commit:
-            user.save()
-        return user
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.setdefault('class', 'form-control')

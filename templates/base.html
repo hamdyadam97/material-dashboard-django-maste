@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 
 <head>
   <meta charset="utf-8" />
@@ -22,13 +22,15 @@
   <!-- CSS Files -->
 </head>
 
-<body>
+<body class="rtl bg-gray-200">
  {% include 'includes/sidebar.html' %}
-<main>
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg overflow-x-hidden">
   {% block content %}{% endblock %}
+     {% include 'includes/footer.html' %}
+
 </main>
 
-  {% include 'includes/footer.html' %}
+
 
 
 <script src="{% static 'js/core/popper.min.js' %}"></script>
